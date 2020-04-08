@@ -1,0 +1,28 @@
+{
+  "name": "service-app-server",
+  "version": "2.1.2",
+  "description": "Mern Demo",
+  "main": "server.js",
+  "engine": {
+    "node": "12.x"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node scripts/seedDB.js"
+  },
+  "author": "Travis Thompson, John Desrosiers",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^5.0.2",
+    "nodemon": "^2.0.2"
+  },
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "dotenv": "^8.2.0",
+    "express": "^4.16.4",
+    "express-jwt": "^5.3.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.8.7",
+    "morgan": "^1.9.1"
+  }
+}
