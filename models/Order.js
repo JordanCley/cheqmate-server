@@ -17,6 +17,10 @@ const OrderSchema = new Schema({
             ref: "Product"
         }
     }],
+    totalItems: {
+        type: Number,
+        required: false,
+    },
     total: {
         type: Number,
         required: true,
