@@ -2,13 +2,13 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const path = require("path");
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
 const morgan = require("morgan"); // used to see requests
 const db = require("./models");
 const PORT = process.env.PORT || 3001;
 
-const isAuthenticated = require("./config/isAuthenticated");
-const auth = require("./config/auth");
+const isAuthenticated = require("./authConfig/isAuthenticated");
+const auth = require("./authConfig/auth");
 
 // Setting CORS so that any website can
 // Access our API
@@ -30,20 +30,24 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
 }
 
-const dbOptions = {
-  useNewUrlParser: true,
-  useFindAndModify: false,
-  useCreateIndex: true,
-  useUnifiedTopology: true,
-};
+// DB Connection
+require("./database/connection");
+// require("./bootstrap")();
 
-mongoose
-  .connect(
-    process.env.MONGODB_URI || "mongodb://localhost:27017/serviceAppDB",
-    dbOptions
-  )
-  .then(() => console.log("MongoDB Connected!"))
-  .catch((err) => console.error(err));
+// const dbOptions = {
+//   useNewUrlParser: true,
+//   useFindAndModify: false,
+//   useCreateIndex: true,
+//   useUnifiedTopology: true, $2a$10$6EmN3l67AqyVSwjwb6UoEustnkRANwckQDe4TNRJjI5DgAX445T/q
+// };
+
+// mongoose
+//   .connect(
+//     process.env.MONGODB_URI || "mongodb://localhost:27017/serviceAppDB",
+//     dbOptions
+//   )
+//   .then(() => console.log("MongoDB Connected!"))
+//   .catch((err) => console.error(err));
 
 // LOGIN ROUTE
 app.post("/api/login", (req, res) => {
@@ -53,8 +57,16 @@ app.post("/api/login", (req, res) => {
     .catch((err) => res.status(400).json(err));
 });
 
+// const user = {
+//   first_name: "Jordan",
+//   last_name: "McQuiston",
+//   password: "password",
+//   email: "jordan@jordanmcquiston.com",
+// };
+
 // SIGNUP ROUTE
 app.post("/api/signup", (req, res) => {
+  console.log(req);
   db.User.create(req.body)
     .then((data) => res.json(data))
     .catch((err) => res.status(400).json(err));
@@ -103,7 +115,6 @@ app.get("/api/order/view_all", isAuthenticated, (req, res) => {
     .then((data) => res.json(data))
     .catch((err) => res.status(400).json(err));
 });
-
 
 // update order isPaid to true after payment
 app.put("/api/order/:id", isAuthenticated, (req, res) => {

@@ -1,56 +1,47 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const Sequelize = require("sequelize");
+const sequelize = require("../database/connection");
 
-const OrderSchema = new Schema({
-    userId: {
-        type: Schema.Types.ObjectId,
-        ref: "User"
+module.exports = sequelize.define(
+  "Order",
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
     },
-    items: [{
-        quantity: Number,
-        imageURL: String,
-        productName: String,
-        description: String,
-        price: Number,
-        product: {
-            type: Schema.Types.ObjectId,
-            ref: "Product"
-        }
-    }],
-    totalItems: {
-        type: Number,
-        required: false,
+    total_items: {
+      type: Sequelize.INTEGER,
+      allowNull: true,
     },
     total: {
-        type: Number,
-        required: true,
+      type: Sequelize.INTEGER,
+      allowNull: false,
     },
-    gratuity: {
-        type: Number,
-        required: true,
+    gratutity: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
     },
     tax: {
-        type: Number,
-        required: true,
-        default: 9.9
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      defaultValue: 9.9,
     },
-    grandTotal: {
-        type: Number,
-        required: true
+    grand_total: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
     },
-    tableNum: {
-        type: String,
-        required: true
+    table_number: {
+      type: Sequelize.STRING,
+      allowNull: false,
     },
-    isPaid: {
-        type: Boolean,
-        required: true,
-        default: false
-    }
-},
-    { timestamps: true }
+    is_paid: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+  },
+  {
+    underscored: true,
+  }
 );
-
-const Order = mongoose.model("Order", OrderSchema);
-
-module.exports = Order;
