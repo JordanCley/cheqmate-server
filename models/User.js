@@ -40,12 +40,6 @@ const User = sequelize.define(
         fields: ["email"],
       },
     ],
-    hooks: {
-      beforeCreate: function (user) {
-        let salt = bcrypt.genSaltSync(10);
-        user.password = bcrypt.hashSync(user.password, salt);
-      },
-    },
     underscored: true,
   }
 );
