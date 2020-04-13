@@ -12,21 +12,21 @@ module.exports = async () => {
     foreignKey: "product_id",
   });
 
-  const user = {
-    first_name: "Jordan",
-    last_name: "McQuiston",
-    password: "password",
-    email: "jordan@jordanmcquiston.com",
-  };
+  // const user = {
+  //   first_name: "Jordan",
+  //   last_name: "McQuiston",
+  //   password: "password",
+  //   email: "jordan@jordanmcquiston.com",
+  // };
 
-  const product = {
-    image_url: "www.someImage.com",
-    product_name: "Bloomin' Onion",
-    description: `An Outback original! Our special onion is hand-carved, 
-      cooked until golden and ready to dip into our spicy 
-      signature bloom sauce.`,
-    price: 8.99,
-  };
+  // const product = {
+  //   image_url: "www.someImage.com",
+  //   product_name: "Bloomin' Onion",
+  //   description: `An Outback original! Our special onion is hand-carved, 
+  //     cooked until golden and ready to dip into our spicy 
+  //     signature bloom sauce.`,
+  //   price: 8.99,
+  // };
 
   // const orderItem = {
   //   quantity: 4,
@@ -42,12 +42,12 @@ module.exports = async () => {
   //   is_paid: false,
   // };
 
-  const errHandler = (err) => {
-    console.error("Error", err);
-  };
+  // const errHandler = (err) => {
+  //   console.error("Error", err);
+  // };
 
-  const newUser = await db.User.create(user).catch(errHandler);
-  const newProduct = await db.Product.create(product).catch(errHandler);
+  // const newUser = await db.User.create(user).catch(errHandler);
+  // const newProduct = await db.Product.create(product).catch(errHandler);
   // const newOrder = await db.Order.create({
   //   user_id: newUser.id,
   //   ...order,
@@ -62,5 +62,5 @@ module.exports = async () => {
   //   include: [{ model: db.Order, as: "Orders" }],
   // }).catch(errHandler);
 
-  console.log(`Jordan's Orders:`, newUser, newProduct);
+  // console.log(`Jordan's Orders:`, newUser, newProduct);
 };
