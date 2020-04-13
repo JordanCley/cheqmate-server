@@ -3,10 +3,6 @@ const jwt = require("jsonwebtoken");
 const verifyPassword = require("./verifyPassword");
 
 module.exports = {
-  // logUserIn: async function (email, password){
-  //   const user = await db.User.findOne({where: {email: email}});
-
-  // }
   logUserIn: function (email, password) {
     return new Promise((resolve, reject) => {
       db.User.findOne({
