@@ -38,7 +38,7 @@ require("./database/connection");
 //   useNewUrlParser: true,
 //   useFindAndModify: false,
 //   useCreateIndex: true,
-//   useUnifiedTopology: true, $2a$10$6EmN3l67AqyVSwjwb6UoEustnkRANwckQDe4TNRJjI5DgAX445T/q
+//   useUnifiedTopology: true, 
 // };
 
 // mongoose
@@ -51,6 +51,7 @@ require("./database/connection");
 
 // LOGIN ROUTE
 app.post("/api/login", (req, res) => {
+  console.log(req.body.email, req.body.password)
   auth
     .logUserIn(req.body.email, req.body.password)
     .then((dbUser) => res.json(dbUser))
@@ -66,7 +67,6 @@ app.post("/api/login", (req, res) => {
 
 // SIGNUP ROUTE
 app.post("/api/signup", (req, res) => {
-  console.log(req);
   db.User.create(req.body)
     .then((data) => res.json(data))
     .catch((err) => res.status(400).json(err));

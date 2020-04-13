@@ -1,7 +1,12 @@
 const db = require("../models");
 const jwt = require("jsonwebtoken");
+const verifyPassword = require("./verifyPassword");
 
 module.exports = {
+  // logUserIn: async function (email, password){
+  //   const user = await db.User.findOne({where: {email: email}});
+
+  // }
   logUserIn: function (email, password) {
     return new Promise((resolve, reject) => {
       db.User.findOne({
@@ -10,7 +15,11 @@ module.exports = {
         },
       })
         .then((user) => {
-          user.verifyPassword(password, (err, isMatch) => {
+          verifyPassword.comparePassword(password, user.password, function (
+            err,
+            isMatch
+          ) {
+            console.log(err, isMatch);
             if (isMatch && !err) {
               let token = jwt.sign(
                 { id: user.id, first_name: user.first_name, email: user.email },
