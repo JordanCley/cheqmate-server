@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const path = require("path");
-const morgan = require("morgan"); // used to see requests
+const morgan = require("morgan"); 
 const db = require("./models");
 const PORT = process.env.PORT || 3001;
 
@@ -32,11 +32,9 @@ if (process.env.NODE_ENV === "production") {
 
 // DB Connection
 require("./database/connection");
-// require("./bootstrap")();
 
 // LOGIN ROUTE
 app.post("/api/login", (req, res) => {
-  console.log(req.body.email, req.body.password);
   auth
     .logUserIn(req.body.email, req.body.password)
     .then((dbUser) => res.json(dbUser))
@@ -46,19 +44,18 @@ app.post("/api/login", (req, res) => {
 // SIGNUP ROUTE
 app.post("/api/signup", (req, res) => {
   const user = passwordHash.createHash(req.body);
-  console.log(user);
   db.User.create(user)
-    .then((data) => res.json(data))
+    .then((newUser) => res.json(newUser))
     .catch((err) => res.status(400).json(err));
 });
 
-// Any route with isAuthenticated is protected and you need a valid token
-// to access
+// get user
 app.get("/api/user/:id", isAuthenticated, (req, res) => {
+  console.log(req.body);
   db.User.findOne({ where: { id: req.params.id } })
-    .then((data) => {
-      if (data) {
-        res.json(data);
+    .then((user) => {
+      if (user) {
+        res.json(user);
       } else {
         res.status(404).send({ success: false, message: "No user found" });
       }
@@ -66,12 +63,12 @@ app.get("/api/user/:id", isAuthenticated, (req, res) => {
     .catch((err) => res.status(400).send(err));
 });
 
-// getting all products/app items ****
+// get all products
 app.get("/api/products", (req, res) => {
   db.Product.findAll()
-    .then((data) => {
-      if (data) {
-        res.json(data);
+    .then((products) => {
+      if (products) {
+        res.json(products);
       } else {
         res.status(404).send({ success: false, message: "No products found" });
       }
@@ -79,47 +76,51 @@ app.get("/api/products", (req, res) => {
     .catch((err) => res.status(400).send(err));
 });
 
-// post route to create order from cart
+// create order
 app.post("/api/order/new", isAuthenticated, (req, res) => {
   const user = req.user.id;
-  let itemNum = 0;
-  req.body.items.map(item => {itemNum += item.quantity})
-  db.Order.create({ user_id: user, ...req.body, total_items: itemNum })
+  const order = { user_id: user, ...req.body };
+  db.Order.create(order, {
+    include: [{ model: db.OrderItem, as: "order_items" }],
+  })
+    .then((createdOrder) => res.json(createdOrder))
+    .catch((err) => res.status(400).json(err));
+});
+
+// getting all orders for loggedIn user
+app.get("/api/order/view_all", isAuthenticated, (req, res) => {
+  const user = req.user.id;
+  db.Order.findAll({ where: { user_id: user, is_paid: true } })
     .then((data) => res.json(data))
     .catch((err) => res.status(400).json(err));
 });
 
-// // getting all orders for loggedIn user
-// app.get("/api/order/view_all", isAuthenticated, (req, res) => {
-//   db.Order.find({ userId: req.user.id, isPaid: true })
-//     .then((data) => res.json(data))
-//     .catch((err) => res.status(400).json(err));
-// });
+// update order isPaid to true after payment
+app.put("/api/update_order_paid/:id", isAuthenticated, (req, res) => {
+  db.Order.update(
+    { is_paid: true },
+    {
+      where: {
+        id: req.params.id,
+      },
+    }
+  )
+    .then((updatedResponse) => res.json(updatedResponse))
+    .catch((err) => res.status(400).json(err));
+});
 
-// // update order isPaid to true after payment
-// app.put("/api/order/:id", isAuthenticated, (req, res) => {
-//   db.Order.findByIdAndUpdate(req.params.id, { ...req.body, isPaid: true })
-//     .then((data) => res.json(data))
-//     .catch((err) => res.status(400).json(err));
-// });
+app.get("/", isAuthenticated, (req, res) => {
+  res.send("You are authenticated");
+});
 
-// app.get(
-//   "/",
-//   isAuthenticated /* Using the express jwt MW here */,
-//   (req, res) => {
-//     res.send("You are authenticated"); //Sending some response when authenticated
-//   }
-// );
-
-// // Error handling
-// app.use(function (err, req, res, next) {
-//   if (err.name === "UnauthorizedError") {
-//     // Send the error rather than to show it on the console
-//     res.status(401).send(err);
-//   } else {
-//     next(err);
-//   }
-// });
+// Error handling
+app.use(function (err, req, res, next) {
+  if (err.name === "UnauthorizedError") {
+    res.status(401).send(err);
+  } else {
+    next(err);
+  }
+});
 
 // // Send every request to the React app
 // // Define any API routes before this runs
