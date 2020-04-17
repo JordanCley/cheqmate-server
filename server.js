@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const path = require("path");
-const morgan = require("morgan"); 
+const morgan = require("morgan");
 const db = require("./models");
 const PORT = process.env.PORT || 3001;
 
@@ -51,7 +51,6 @@ app.post("/api/signup", (req, res) => {
 
 // get user
 app.get("/api/user/:id", isAuthenticated, (req, res) => {
-  console.log(req.body);
   db.User.findOne({ where: { id: req.params.id } })
     .then((user) => {
       if (user) {
@@ -80,25 +79,60 @@ app.get("/api/products", (req, res) => {
 app.post("/api/order/new", isAuthenticated, (req, res) => {
   const user = req.user.id;
   const order = { user_id: user, ...req.body };
-  db.Order.create(order, {
-    include: [{ model: db.OrderItem, as: "order_items" }],
-  })
+  let totalItems = 0;
+  req.body.order_items.map((item) => {
+    totalItems += item.quantity;
+  });
+  db.Order.create(
+    { ...order, total_items: totalItems },
+    {
+      include: [{ model: db.OrderItem, as: "order_items" }],
+    }
+  )
     .then((createdOrder) => res.json(createdOrder))
     .catch((err) => res.status(400).json(err));
 });
 
 // getting all orders for loggedIn user
-app.get("/api/order/view_all", isAuthenticated, (req, res) => {
+app.get("/api/order/view_all_past_orders", isAuthenticated, (req, res) => {
   const user = req.user.id;
-  db.Order.findAll({ where: { user_id: user, is_paid: true } })
+  db.Order.findAll(
+    { where: { user_id: user, is_paid: true } },
+    {
+      include: [{ model: db.OrderItem, as: "order_items" }],
+    }
+  )
     .then((data) => res.json(data))
     .catch((err) => res.status(400).json(err));
 });
 
-// update order isPaid to true after payment
+// getting open check
+app.get("/api/order/open_order/:id", isAuthenticated, (req, res) => {
+  const user = req.user.id;
+  db.Order.findOne({
+    where: { id: req.params.id, user_id: user, is_paid: true },
+    include: [{ all: true, nested: true }],
+  })
+    .then((data) => res.json(data))
+    .catch((err) => res.status(400).json(err));
+});
+
+// getting one past order
+app.get("/api/order/view_past_order/:id", isAuthenticated, (req, res) => {
+  const user = req.user.id;
+
+  db.Order.findOne({
+    where: { id: req.params.id, user_id: user},
+    include: [{ all: true, nested: true }],
+  })
+    .then((data) => res.json(data))
+    .catch((err) => res.status(400).json(err));
+});
+
+// update order after payment
 app.put("/api/update_order_paid/:id", isAuthenticated, (req, res) => {
   db.Order.update(
-    { is_paid: true },
+    { is_paid: true, ...req.body },
     {
       where: {
         id: req.params.id,
@@ -122,11 +156,11 @@ app.use(function (err, req, res, next) {
   }
 });
 
-// // Send every request to the React app
-// // Define any API routes before this runs
-// app.get("*", function (req, res) {
-//   res.sendFile(path.join(__dirname, "./client/build/index.html"));
-// });
+// Send every request to the React app
+// Define any API routes before this runs
+app.get("*", function (req, res) {
+  res.sendFile(path.join(__dirname, "./client/build/index.html"));
+});
 
 app.listen(PORT, function () {
   console.log(`🌎 ==> Server now on port ${PORT}!`);

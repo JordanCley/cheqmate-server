@@ -13,21 +13,23 @@ module.exports = {
         allowNull: true,
       },
       total: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT(10,2),
         allowNull: false,
       },
       gratuity: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        defaultValue: 0
       },
       tax: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT(10,2),
         allowNull: false,
-        defaultValue: 9.9,
+        defaultValue: 7.25,
       },
       grand_total: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT(10,2),
         allowNull: false,
+        defaultValue: 0
       },
       table_number: {
         type: Sequelize.STRING,

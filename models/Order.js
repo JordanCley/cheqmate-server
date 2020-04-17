@@ -14,15 +14,17 @@ module.exports = (sequelize, DataTypes) => {
       gratuity: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        defaultValue: 0
       },
       tax: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.FLOAT(10,2),
         allowNull: false,
-        defaultValue: 9.9,
+        defaultValue: 7.25,
       },
       grand_total: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.FLOAT(10,2),
         allowNull: false,
+        defaultValue: 0
       },
       table_number: {
         type: DataTypes.STRING,

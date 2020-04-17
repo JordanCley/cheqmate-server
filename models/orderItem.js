@@ -7,13 +7,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      // order_id: {
-      //   type: DataTypes.INTEGER,
-      //   allowNull: true,
-      //   set(value){
-      //     this.setDataValue("order_id", value)
-      //   }
-      // },
     },
     { underscored: true }
   );
