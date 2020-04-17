@@ -1,7 +1,7 @@
 {
-  "name": "service-app-server",
+  "name": "cheqmate-api",
   "version": "2.1.2",
-  "description": "Mern Demo",
+  "description": "api for restaurant syle shopping cart",
   "main": "server.js",
   "engine": {
     "node": "12.x"
@@ -10,7 +10,7 @@
     "start": "node server.js",
     "seed": "node scripts/seedDB.js"
   },
-  "author": "Travis Thompson, John Desrosiers",
+  "author": "Jordan McQuiston",
   "license": "ISC",
   "devDependencies": {
     "eslint": "^6.8.0",
