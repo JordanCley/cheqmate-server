@@ -2,39 +2,45 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("products", {
+    return queryInterface.createTable("users", {
       id: {
-        type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-      },
-      image_url: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      product_name: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      description: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      price: {
         type: Sequelize.INTEGER,
+      },
+      first_name: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        trim: true,
+      },
+      last_name: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        trim: true,
+      },
+      email: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        trim: true,
+        unique: true,
+        lowercase: true,
+      },
+      password: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
       created_at: {
+        allowNull: false,
         type: Sequelize.DATE,
       },
       updated_at: {
+        allowNull: false,
         type: Sequelize.DATE,
       },
     });
   },
-
   down: (queryInterface) => {
-    return queryInterface.dropTable("products");
+    return queryInterface.dropTable("users");
   },
 };

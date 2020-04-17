@@ -1,13 +1,12 @@
 "use strict";
-
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable("order_items", {
       id: {
-        type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
+        type: Sequelize.INTEGER,
       },
       quantity: {
         type: Sequelize.INTEGER,
@@ -15,21 +14,22 @@ module.exports = {
       },
       order_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       product_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       created_at: {
+        allowNull: false,
         type: Sequelize.DATE,
       },
       updated_at: {
+        allowNull: false,
         type: Sequelize.DATE,
       },
     });
   },
-
   down: (queryInterface) => {
     return queryInterface.dropTable("order_items");
   },

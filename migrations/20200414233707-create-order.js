@@ -1,34 +1,35 @@
 "use strict";
-
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable("orders", {
       id: {
-        type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
+        type: Sequelize.INTEGER,
       },
       total_items: {
         type: Sequelize.INTEGER,
         allowNull: true,
       },
       total: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT(10,2),
         allowNull: false,
       },
-      gratutity: {
+      gratuity: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        defaultValue: 0
       },
       tax: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT(10,2),
         allowNull: false,
-        defaultValue: 9.9,
+        defaultValue: 7.25,
       },
       grand_total: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT(10,2),
         allowNull: false,
+        defaultValue: 0
       },
       table_number: {
         type: Sequelize.STRING,
@@ -41,17 +42,18 @@ module.exports = {
       },
       user_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       created_at: {
+        allowNull: false,
         type: Sequelize.DATE,
       },
       updated_at: {
+        allowNull: false,
         type: Sequelize.DATE,
       },
     });
   },
-
   down: (queryInterface) => {
     return queryInterface.dropTable("orders");
   },
