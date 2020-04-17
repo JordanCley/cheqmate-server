@@ -122,7 +122,7 @@ app.get("/api/order/view_past_order/:id", isAuthenticated, (req, res) => {
   const user = req.user.id;
 
   db.Order.findOne({
-    where: { id: req.params.id, user_id: user},
+    where: { id: req.params.id, user_id: user },
     include: [{ all: true, nested: true }],
   })
     .then((data) => res.json(data))
@@ -159,7 +159,7 @@ app.use(function (err, req, res, next) {
 // Send every request to the React app
 // Define any API routes before this runs
 app.get("*", function (req, res) {
-  res.sendFile(path.join(__dirname, "./client/build/index.html"));
+  res.sendFile(path.join(__dirname, "./cheqmate-client/build/index.html"));
 });
 
 app.listen(PORT, function () {
