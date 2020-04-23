@@ -1,11 +1,9 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
-const path = require("path");
 const morgan = require("morgan");
 const db = require("./models");
 const PORT = process.env.PORT || 3001;
-
 const isAuthenticated = require("./authConfig/isAuthenticated");
 const auth = require("./authConfig/auth");
 const passwordHash = require("./authConfig/passwordHash");
@@ -14,7 +12,8 @@ const passwordHash = require("./authConfig/passwordHash");
 // Access our API
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Headers", "Content-type,Authorization");
+  res.setHeader("Access-Control-Allow-Headers", "Content-type, Authorization");
+  res.setHeader("Access-Control-Allow-Methods", "*");
   next();
 });
 
@@ -156,11 +155,6 @@ app.use(function (err, req, res, next) {
   }
 });
 
-// // Send every request to the React app
-// // Define any API routes before this runs
-// app.get("*", function (req, res) {
-//   res.sendFile(path.join(__dirname, "./cheqmate-client/build/index.html"));
-// });
 
 app.listen(PORT, function () {
   console.log(`🌎 ==> Server now on port ${PORT}!`);
