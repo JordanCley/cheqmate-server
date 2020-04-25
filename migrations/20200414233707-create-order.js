@@ -12,7 +12,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: true,
       },
-      total: {
+      subtotal: {
         type: Sequelize.FLOAT(10,2),
         allowNull: false,
       },

@@ -1,7 +1,7 @@
 {
   "name": "cheqmate-api",
   "version": "2.1.2",
-  "description": "api for restaurant syle shopping cart",
+  "description": "api for restaurant style shopping cart",
   "main": "server.js",
   "engine": {
     "node": "12.x"
