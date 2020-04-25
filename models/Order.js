@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
-      total: {
+      subtotal: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
