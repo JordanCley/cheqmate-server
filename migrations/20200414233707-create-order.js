@@ -17,7 +17,7 @@ module.exports = {
         allowNull: false,
       },
       gratuity: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT(10,2),
         allowNull: false,
         defaultValue: 0
       },
