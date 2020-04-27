@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       gratuity: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.FLOAT(10,2),
         allowNull: false,
         defaultValue: 0
       },
