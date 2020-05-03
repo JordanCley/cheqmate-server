@@ -7,6 +7,8 @@ const PORT = process.env.PORT || 3001;
 const isAuthenticated = require("./authConfig/isAuthenticated");
 const auth = require("./authConfig/auth");
 const passwordHash = require("./authConfig/passwordHash");
+const https = require('https');
+const fs = require('fs');
 
 // Setting CORS so that any website can
 // Access our API
@@ -33,7 +35,7 @@ if (process.env.NODE_ENV === "production") {
 require("./database/connection");
 
 // LOGIN ROUTE
-app.post("/api/login", (req, res) => {
+app.post("/login", (req, res) => {
   auth
     .logUserIn(req.body.email, req.body.password)
     .then((dbUser) => res.json(dbUser))
@@ -41,7 +43,7 @@ app.post("/api/login", (req, res) => {
 });
 
 // SIGNUP ROUTE
-app.post("/api/signup", (req, res) => {
+app.post("/signup", (req, res) => {
   const user = passwordHash.createHash(req.body);
   db.User.create(user)
     .then((newUser) => res.json(newUser))
@@ -49,7 +51,7 @@ app.post("/api/signup", (req, res) => {
 });
 
 // get user
-app.get("/api/user/:id", isAuthenticated, (req, res) => {
+app.get("/user/:id", isAuthenticated, (req, res) => {
   db.User.findOne({ where: { id: req.params.id } })
     .then((user) => {
       if (user) {
@@ -62,7 +64,7 @@ app.get("/api/user/:id", isAuthenticated, (req, res) => {
 });
 
 // get all products
-app.get("/api/products", (req, res) => {
+app.get("/products", (req, res) => {
   db.Product.findAll()
     .then((products) => {
       if (products) {
@@ -75,7 +77,7 @@ app.get("/api/products", (req, res) => {
 });
 
 // create order
-app.post("/api/order/new", isAuthenticated, (req, res) => {
+app.post("/order/new", isAuthenticated, (req, res) => {
   const user = req.user.id;
   const order = { user_id: user, ...req.body };
   let totalItems = 0;
@@ -93,7 +95,7 @@ app.post("/api/order/new", isAuthenticated, (req, res) => {
 });
 
 // getting all orders for loggedIn user
-app.get("/api/order/view_all_past_orders", isAuthenticated, (req, res) => {
+app.get("/order/view_all_past_orders", isAuthenticated, (req, res) => {
   const user = req.user.id;
   db.Order.findAll(
     { where: { user_id: user, is_paid: true } },
@@ -106,7 +108,7 @@ app.get("/api/order/view_all_past_orders", isAuthenticated, (req, res) => {
 });
 
 // getting open check
-app.get("/api/order/open_order/:id", isAuthenticated, (req, res) => {
+app.get("/order/open_order/:id", isAuthenticated, (req, res) => {
   const user = req.user.id;
   db.Order.findOne({
     where: { id: req.params.id, user_id: user, is_paid: true },
@@ -117,7 +119,7 @@ app.get("/api/order/open_order/:id", isAuthenticated, (req, res) => {
 });
 
 // getting one past order
-app.get("/api/order/view_past_order/:id", isAuthenticated, (req, res) => {
+app.get("/order/view_past_order/:id", isAuthenticated, (req, res) => {
   const user = req.user.id;
 
   db.Order.findOne({
@@ -129,7 +131,7 @@ app.get("/api/order/view_past_order/:id", isAuthenticated, (req, res) => {
 });
 
 // update order after payment
-app.put("/api/update_order_paid/:id", isAuthenticated, (req, res) => {
+app.put("/update_order_paid/:id", isAuthenticated, (req, res) => {
   db.Order.update(
     { is_paid: true, ...req.body },
     {
@@ -154,6 +156,11 @@ app.use(function (err, req, res, next) {
     next(err);
   }
 });
+
+https.createServer({
+  key: fs.readFileSync("/etc/letsencrypt/live/api.cheqmate.app/privkey.pem"),
+  cert: fs.readFileSync("/etc/letsencrypt/live/api.cheqmate.app/fullchain.pem")
+}, app).listen(443);
 
 
 app.listen(PORT, function () {
