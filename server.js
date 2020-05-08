@@ -5,10 +5,17 @@ const morgan = require("morgan");
 const db = require("./models");
 const PORT = process.env.PORT || 3001;
 const isAuthenticated = require("./authConfig/isAuthenticated");
-const auth = require("./authConfig/auth");
+// const auth = require("./authConfig/auth");
+
+const userRoutes = require("./routes/user.routes");
+const authRoutes = require("./routes/auth.routes");
+
+
+
 const passwordHash = require("./authConfig/passwordHash");
-const https = require('https');
-const fs = require('fs');
+
+// const https = require('https');
+// const fs = require('fs');
 
 // Setting CORS so that any website can
 // Access our API
@@ -19,6 +26,7 @@ app.use((req, res, next) => {
   next();
 });
 
+
 //log all requests to the console
 app.use(morgan("dev"));
 
@@ -26,42 +34,9 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve up static assets (usually on heroku)
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("client/build"));
-}
-
 // DB Connection
 require("./database/connection");
 
-// LOGIN ROUTE
-app.post("/login", (req, res) => {
-  auth
-    .logUserIn(req.body.email, req.body.password)
-    .then((dbUser) => res.json(dbUser))
-    .catch((err) => res.status(400).json(err));
-});
-
-// SIGNUP ROUTE
-app.post("/signup", (req, res) => {
-  const user = passwordHash.createHash(req.body);
-  db.User.create(user)
-    .then((newUser) => res.json(newUser))
-    .catch((err) => res.status(400).json(err));
-});
-
-// get user
-app.get("/user/:id", isAuthenticated, (req, res) => {
-  db.User.findOne({ where: { id: req.params.id } })
-    .then((user) => {
-      if (user) {
-        res.json(user);
-      } else {
-        res.status(404).send({ success: false, message: "No user found" });
-      }
-    })
-    .catch((err) => res.status(400).send(err));
-});
 
 // get all products
 app.get("/products", (req, res) => {
@@ -144,9 +119,6 @@ app.put("/update_order_paid/:id", isAuthenticated, (req, res) => {
     .catch((err) => res.status(400).json(err));
 });
 
-app.get("/", isAuthenticated, (req, res) => {
-  res.send("You are authenticated");
-});
 
 // Error handling
 app.use(function (err, req, res, next) {
@@ -157,10 +129,15 @@ app.use(function (err, req, res, next) {
   }
 });
 
-https.createServer({
-  key: fs.readFileSync("/etc/letsencrypt/live/api.cheqmate.app/privkey.pem"),
-  cert: fs.readFileSync("/etc/letsencrypt/live/api.cheqmate.app/fullchain.pem")
-}, app).listen(443);
+app.use("/", authRoutes);
+app.use("/", userRoutes);
+
+// unComment and create an SSL Cert when in EC2
+
+// https.createServer({
+//   key: fs.readFileSync("/etc/letsencrypt/live/api.cheqmate.app/privkey.pem"),
+//   cert: fs.readFileSync("/etc/letsencrypt/live/api.cheqmate.app/fullchain.pem")
+// }, app).listen(443);
 
 
 app.listen(PORT, function () {
