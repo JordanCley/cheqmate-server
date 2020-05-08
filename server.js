@@ -9,10 +9,12 @@ const PORT = process.env.PORT || 3001;
 // const https = require('https');
 // const fs = require('fs');
 
-const userRoutes = require("./routes/user.routes");
-const authRoutes = require("./routes/auth.routes");
-const orderRoutes = require("./routes/order.routes");
-const productRoutes = require("./routes/product.routes");
+const routes = require("./routes");
+
+// const userRoutes = require("./routes/user.routes");
+// const authRoutes = require("./routes/auth.routes");
+// const orderRoutes = require("./routes/order.routes");
+// const productRoutes = require("./routes/product.routes");
 
 // CORS
 app.use((req, res, next) => {
@@ -35,10 +37,10 @@ app.use(function (err, req, res, next) {
   }
 });
 
-app.use("/", authRoutes);
-app.use("/", orderRoutes);
-app.use("/", userRoutes);
-app.use("/", productRoutes);
+app.use("/", routes.authRoutes);
+app.use("/", routes.orderRoutes);
+app.use("/", routes.userRoutes);
+app.use("/", routes.productRoutes);
 
 // Un-Comment and create an SSL Cert when on EC2
 
