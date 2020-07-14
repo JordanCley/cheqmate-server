@@ -9,7 +9,7 @@ This is the api for cheqmate-app. I chose to use mySQL with sequelize for the da
 
 ## Deployed URL (AWS)
 
-[Cheqmate](https://www.cheqmate.app/)
+[www.cheqmate.app](https://www.cheqmate.app/)
 
 ![Cheqmate UI](cheqmate.gif)
 
