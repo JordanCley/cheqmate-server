@@ -1,4 +1,4 @@
-# Cheqmate-API
+# cheqmate-api
 
 Cheqmate is an ordering app that you can use from the comfort of your phone. Just sit down at your table, enter the table number and order away! This cuts out all the bulky hardware at your table as well as allows for a cleaner, safer visit at your local restaurant.
 
